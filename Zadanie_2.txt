@@ -1,0 +1,157 @@
+Задание 1.
+
+Предположим, нам необходимо хранить в БД часть информации какого-либо блога. Конкретно - записи
+(posts) и авторы (authors).
+В детали вдаваться не стоит, достаточно основных, ключевых полей. Необходимо учесть, что одна запись
+может писаться несколькими авторами.
+Предложите структуру таблиц и связи, напишите SQL запрос(ы), которые это реализуют.
+
+Ответ:
+-------
+	создаём промежуточную таблицу, где внешними ключами будут id необходимых нам таблиц.
+
+
+Таблица постов:
+
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+Таблица авторов:
+
+CREATE TABLE `authors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+Промежуточная таблица:
+
+CREATE TABLE `authors_posts` (
+  `post_id` int(11) NOT NULL,
+  `author_id` int(11) NOT NULL,
+  KEY `author_id` (`author_id`),
+  KEY `post_id` (`post_id`),
+  CONSTRAINT `authors_posts_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON UPDATE
+CASCADE,
+  CONSTRAINT `authors_posts_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+
+
+--------------------------------------------------------------------------
+
+
+Задание 2.
+
+Даны следующие две таблицы:
+	- claim
+	- manager
+
+Напишите sql-запрос, выбирающий информацию по каждому менеджеру, включая количество связанных с ним
+заявок и их общую сумму (в 2 дополнительных поля: claim_count, claim_total_sum).
+Выборка должна быть выполнена одним запросом!
+
+
+
+SELECT M.id, M.first_name, M.last_name,
+COUNT(*) as claim_count,
+SUM(C.sum) as claim_total_sum
+	FROM manager M, claim C
+	WHERE M.id = C.manager_id
+	GROUP BY M.id;
+
+
+
+----------------------------------------------------------------------------
+
+
+Задание 3.
+
+Напишите запрос, который выведет двух менеджеров, у которых количество связанных заявок меньше, чем у
+остальных.
+При этом, объедините значения first_name и last_name в одно поле full_name.
+
+
+
+SELECT M.id,
+CONCAT(M.first_name, ' ', M.last_name) as full_name,
+COUNT(C.id) as quantity
+	FROM manager M, claim C
+	WHERE M.id = C.manager_id
+	GROUP BY 1
+	ORDER BY 3 ASC
+	LIMIT 2;
+
+
+
+----------------------------------------------------------------------------
+
+
+Задание 4.
+
+Напишите запрос, который выведет список менеджеров, количество заявок у которых больше, чем у их
+руководителя (связь с руководителем по полю chief_id).
+
+
+
+SELECT M.id, M.first_name, COUNT(C.manager_id) as count
+	FROM manager M, claim C
+	WHERE M.id = C.manager_id
+	GROUP BY 1
+	HAVING count > (
+		SELECT COUNT(C.manager_id)
+			FROM manager M, claim C
+			WHERE M.chief_id = C.manager_id);
+
+
+
+
+----------------------------------------------------------------------------
+
+
+Задание 5.
+
+Напишите запрос, результатом которого будет "месячный отчет" по заявкам.
+Т.е. в результате, мы должны увидеть таблицу с полями month, claim_count, claim_total_sum. Каждый
+месяц - одна строка.
+В поле month, должно быть полное название месяца и год (e.g. November 2012). В поле claim_count -
+количество заявок в этом месяце,
+а claim_total_sum - общая сумма по заявкам.
+
+
+
+
+SELECT CONCAT(MONTHNAME(created_at), ' ', YEAR(created_at)) as month,
+COUNT(id) as claim_count,
+SUM(sum) as claim_total_sum
+	FROM claim
+	GROUP BY 1;
+
+
+
+
+
+----------------------------------------------------------------------------
+
+
+Задание 6.
+Выберите топ-менеджеров за июль 2013 (07.2013) по результатам среднего значения суммы заявки.
+
+
+
+SELECT M.id, M.first_name,
+AVG(C.sum) as average,
+MONTH(C.created_at) as month
+	FROM manager M, claim C
+	WHERE DATE_FORMAT(C.created_at, '%m.%Y') = '07.2013'
+		AND M.id = C.manager_id
+	GROUP BY 1
+	ORDER BY 3;
+
