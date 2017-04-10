@@ -1,0 +1,16 @@
+<?php
+
+try {
+    $c = '\StdClass';
+
+    var_dump(new $c);
+    if (!preg_match('/^\d{4}\-\d{2}\-\d{2}$/', '2017-4-12')) {
+        throw new \News\MyLib\UserException('date');
+    }
+
+
+} catch (\News\MyLib\UserException $e) {
+    echo 'UserException ' . $e->getMessage();
+}
+
+?>

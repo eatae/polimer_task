@@ -1,0 +1,62 @@
+<?php
+$this->headTitle($title);
+/* TEST */
+//var_dump($themes);
+
+
+$action = $this->url( 'news-admin', ['action' => 'delete', 'id' => $news->id] );
+
+/* показываем исключение */
+if (!empty($except)) : ?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <hr>
+            <p><?php echo $except; ?></p>
+            <a href="javascript:history.back()" class="back">Назад</a>
+        </div>
+    </div>
+
+    <?php
+    return;
+endif;
+?>
+
+
+<h1><?= $title; ?></h1>
+<br>
+<div class="row">
+
+    <form action="<?php echo $action; ?>" method="POST" name="news">
+        <fieldset>
+            <div class="row">
+
+                <div class="col-sm-12 block">
+                <div class="text-muted"><?php echo $themes[$news->theme_id]->theme_title; ?></div>
+                <h4><?php echo $news->title; ?></h4>
+                <div class="text-muted"><?php echo $news->date; ?></div>
+                <div class="news_text">
+                    <div class="img">
+                        <img src="<?php echo $this->basePath('img/fish.jpg') ?>" alt="картинка" class="img-thumbnail">
+                    </div>
+                    <?php echo $news->text; ?>
+                </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <br>
+                <div class="col-sm-12 text-center">
+                    <p>
+                        Вы уверены, что хотите удалить эту новость?
+                    </p>
+                    <!-- Кнопка -->
+                    <button type="submit" class="btn btn-primary" name="button" value="back">Назад</button>
+                    <span style="display: inline-block; margin: 20px;"></span>
+                    <button type="submit" class="btn btn-danger" name="button" value="del">Удалить</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+

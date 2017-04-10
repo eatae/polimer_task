@@ -1,0 +1,76 @@
+<?php
+$this->headTitle($title);
+//var_dump($themes);
+
+$action = $this->url( 'news-admin', ['action' => 'add'] );
+
+/* показываем исключение */
+if (!empty($except)) : ?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <hr>
+            <p><?php echo $except; ?></p>
+            <a href="javascript:history.back()" class="back">Назад</a>
+        </div>
+    </div>
+
+<?php
+    return;
+    endif;
+?>
+
+
+<h1><?= $title; ?></h1>
+<br>
+<div class="row">
+
+<form action="<?php echo $action; ?>" method="POST" name="news">
+    <fieldset>
+        <div class="row">
+
+            <!-- ФОРМА -->
+            <div class="form-group col-sm-2">
+
+                <!-- Тема -->
+                <label for="theme_title">Тема</label>
+                <select name="theme_title" class="form-control">
+                    <?php foreach ($theme as $obj): ?>
+
+                    <!-- option -->
+                    <option><?php echo $obj->theme_title ?></option>
+
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Заголовок статьи -->
+            <div class="form-group col-sm-4">
+                <label for="title">Заголовок</label>
+                <input type="text" name="title" class="form-control">
+            </div>
+
+            <!-- Дата -->
+            <div class="form-group col-sm-2">
+                <label for="date">Дата</label>
+                <input type="text" name="date" id="date" class="form-control">
+            </div>
+        </div>
+
+        <!-- Текст -->
+        <div class="row">
+            <div class="form-group col-sm-8">
+                <label for="text">Содержание</label>
+                <textarea name="text" class="form-control" rows="5"></textarea>
+            </div>
+        </div>
+
+        <!-- Кнопка -->
+
+        <button type="submit" class="btn btn-default" name="button" value="back">Назад</button>
+        <span style="display: inline-block; margin: 10px;"></span>
+        <button type="submit" class="btn btn-primary" name="button" value="add">Добавить</button>
+    </fieldset>
+</form>
+
+</div>

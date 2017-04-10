@@ -1,0 +1,42 @@
+<?php
+$this->headTitle($title);
+//var_dump($this->url());
+?>
+
+<h1><?php echo $title; ?></h1>
+
+<div class="row">
+
+
+    <div class="col-md-12 block">
+        <div class="text-muted"><?php echo $themes[$news->theme_id]->theme_title; ?></div>
+        <h4><?php echo $news->title; ?></h4>
+        <div class="text-muted"><?php echo $news->date; ?></div>
+        <div class="news_text">
+            <div class="img">
+                <img src="<?php echo $this->basePath('img/fish.jpg') ?>" alt="картинка" class="img-thumbnail">
+            </div>
+            <?php echo $news->text; ?>
+        </div>
+    </div>
+
+    <?php
+    /* Здесь условие для отображении ссылки назад и на главную страницу */
+    //var_dump($_SERVER['HTTP_REFERER']);
+
+    if (null != $_SERVER['HTTP_REFERER']) :
+        $ref = explode('//', $_SERVER['HTTP_REFERER'])[1];
+        $ref = explode('/', $ref)[0];
+
+        if ($ref == $_SERVER['HTTP_HOST']) : ?>
+
+            <div class="col-md-12 block text-center">
+                <a href="javascript:history.back()" class="back">Назад</a>
+                <a href="<?php echo $this->url('home'); ?>" class="back">Все новости</a>
+            </div>
+
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+</div>

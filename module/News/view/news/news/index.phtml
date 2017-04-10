@@ -1,0 +1,122 @@
+<?php
+$this->headTitle($title);
+//var_dump($theme);
+?>
+
+<h1><?php echo $title; ?></h1>
+<div class="row">
+
+    <!-- СПИСКИ -->
+    <div class="col-md-3 block">
+
+        <!-- новости по дате -->
+
+        <?php
+        $year = '';
+
+        foreach ($byMonth as $arr):
+            if ( $year != $arr['year']):
+                $year = $arr['year'];
+                ?>
+
+                <div><strong><?php echo $year; ?></strong></div>
+            <?php endif; ?>
+            <?php
+            // формируем url:  by-month?year=2017&month=3
+            $href = $this->url('news', ['action'=> 'by-month']) .
+                        '?year='. $year .
+                        '&month='. $arr['month'] .
+                        '&cnt=' . $arr['cnt'];
+            ?>
+            <ul>
+                <li>
+                    <a href="<?php echo $href; ?>">
+                        <?php echo $arr['month_name'] .' ('.$arr['cnt'] .')'; ?>
+                    </a>
+                </li>
+            </ul>
+
+        <?php endforeach; ?>
+        <hr>
+
+        <!-- новости по теме -->
+        <?php foreach ($themes as $obj): ?>
+            <?php
+            // формируем url:  by-theme?theme_id=3
+            $href = $this->url('news', ['action'=> 'by-theme']) .
+                '?theme_id=' . $obj->id.
+                '&cnt=' . $obj->cnt;
+            ?>
+            <ul>
+                <li>
+                    <a href="<?php echo $href; ?>">
+                        <?php echo $obj->theme_title .' ('.$obj->cnt .')'; ?>
+                    </a>
+                </li>
+            </ul>
+        <?php endforeach; ?>
+    </div>
+
+
+
+    <!-- ВСЕ НОВОСТИ -->
+    <div class="col-md-9 block">
+        <? foreach($news as $obj): ?>
+
+            <!-- Название темы -->
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="text-muted">
+                        <?php echo $themes[$obj->theme_id]->theme_title; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Заголовок -->
+                <div class="col-md-12">
+                    <h4><?php echo $obj->title; ?></h4>
+                </div>
+                <!-- Дата -->
+                <div class="col-md-12 text-muted">
+                    <?php echo $obj->date; ?>
+                </div>
+                <!-- Текс -->
+                <div class="col-md-12 news_text">
+                    <p><?php echo $obj->clipText(); ?></p>
+                </div>
+                <!-- Ссылка -->
+                <div class="col-md-12">
+                    <?php
+                    $href = $this->url('news', ['action'=> 'one-news', 'id' => $obj->id]);
+                    ?>
+                    <a href="<?php echo $href; ?>">читать далее</a>
+                </div>
+            </div>
+            <hr>
+
+        <?php endforeach; ?>
+    </div>
+        <?php/*
+        if (null != $_SERVER['HTTP_REFERER']) :
+            $ref = explode('//', $_SERVER['HTTP_REFERER'])[1];
+            $ref = explode('/', $ref)[0];
+
+            if ($ref == $_SERVER['HTTP_HOST']) : ?>
+                <div class="col-md-9 block pull-right text-center">
+                    <a href="<?php echo $this->url('home'); ?>" class="back">Все новости</a>
+                </div>
+
+        <?php endif; ?>
+
+        <?php endif; */?>
+</div>
+
+<?php if (!empty($htmlPaginate)) : ?>
+    <div class="row">
+        <div class="col-md-9 block col-md-offset-3 text-center">
+
+            <?php echo $htmlPaginate; ?>
+
+        </div>
+    </div>
+<?php endif; ?>

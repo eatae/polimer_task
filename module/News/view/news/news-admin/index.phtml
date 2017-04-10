@@ -1,0 +1,47 @@
+<?php
+$title = 'Админка';
+$this->headTitle($title);
+
+//var_dump($themes);
+?>
+<h1><?php echo $title ?></h1>
+<p>
+    <a href="<?php echo $this->url('news-admin', ['action' => 'add']); ?>" class="edit">Добавить новость</a>
+</p>
+
+<table class="table">
+    <tr>
+        <th>Дата</th>
+        <th>Тема</th>
+        <th>Заголовок</th>
+        <th></th>
+    </tr>
+
+    <?php foreach( $news as $obj ) : ?>
+        <tr>
+            <!-- дата -->
+            <td><?php echo $this->escapeHtml($obj->date); ?></td>
+            <!-- тема -->
+            <td><?php echo $this->escapeHtml($themes[$obj->theme_id]->theme_title); ?></td>
+            <!-- Заголовок -->
+            <td><?php echo $this->escapeHtml($obj->title); ?></td>
+            <!-- Ссылки -->
+            <td>
+                <!-- ссылки на изменение, удаление альбома -->
+                <a href="<?php echo $this->url( 'news-admin', ['action' => 'edit', 'id' => $obj->id] ); ?>" class="edit">Изменить</a>
+                <a href="<?php echo $this->url( 'news-admin', ['action' => 'delete', 'id' => $obj->id] ); ?>" class="edit">Удалить</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<!-- Pagination -->
+<?php if (!empty($htmlPaginate)) : ?>
+    <div class="row">
+        <div class="col-md-12 text-center">
+
+            <?php echo $htmlPaginate; ?>
+
+        </div>
+    </div>
+<?php endif; ?>
