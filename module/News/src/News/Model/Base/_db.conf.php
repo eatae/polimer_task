@@ -1,3 +1,3 @@
 <?php
-return [/* db settings */]
+return [/* db settings */];
     
